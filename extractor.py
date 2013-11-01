@@ -5,6 +5,7 @@ import hashlib
 
 DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 SEMESTER_START = datetime.datetime(2013, 8, 26)
+SEMESTER_END = datetime.date(2013, 12, 13)
 
 class Class:
 	__slots__=('number', 'name', 'start', 'end')
@@ -16,6 +17,12 @@ class Class:
 		event.add('summary', self.number)
 		event.add('dtstart', self.start)
 		event.add('dtend', self.end)
+		
+		repeat = {}
+		repeat['FREQ'] = 'WEEKLY'
+		repeat['UNTIL'] = SEMESTER_END
+		event.add('rrule', repeat)
+
 		event['uid']=hashlib.sha224(self.__str__()).hexdigest()
 
 		return event
