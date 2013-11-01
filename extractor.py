@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
+from icalendar import Calendar, Event
 import datetime
+import hashlib
 
 DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 SEMESTER_START = datetime.datetime(2013, 8, 26)
@@ -8,6 +10,15 @@ class Class:
 	__slots__=('number', 'name', 'start', 'end')
 	def __init__(self):
 		pass
+	
+	def toEvent(self):
+		event = Event()
+		event.add('summary', self.number)
+		event.add('dtstart', self.start)
+		event.add('dtend', self.end)
+		event['uid']=hashlib.sha224(self.__str__()).hexdigest()
+
+		return event
 
 	def __str__(self):
 		return "Number: %s\nStart: %s\nEnd: %s" % (self.number, self.start, self.end)
@@ -39,11 +50,17 @@ def makeClass(entry):
 	return c
 
 def getClasses(soup):
-	soup.prettify()
-	for entry in soup.find_all(attrs={'class': 'SSSTEXTWEEKLY'}):
-		c = makeClass(entry)
-		print(c)
-		print()
+	return [makeClass(entry) for entry in soup.find_all(attrs={'class': 'SSSTEXTWEEKLY'})]
 
 soup = BeautifulSoup(open('test.html', 'r').read())
-getClasses(soup)
+soup.prettify()
+
+classes = getClasses(soup)
+
+cal = Calendar()
+cal.add('prodid', '-//RIT Class Schedule//mxm.dk//')
+cal.add('version', '2.0')
+
+for c in classes:
+	cal.add_component(c.toEvent())
+print cal.to_ical()
