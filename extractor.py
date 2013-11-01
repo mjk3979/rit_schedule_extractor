@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from icalendar import Calendar, Event
 import datetime
 import hashlib
+import sys
 
 DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 SEMESTER_START = datetime.datetime(2013, 8, 26)
@@ -59,7 +60,7 @@ def makeClass(entry):
 def getClasses(soup):
 	return [makeClass(entry) for entry in soup.find_all(attrs={'class': 'SSSTEXTWEEKLY'})]
 
-soup = BeautifulSoup(open('test.html', 'r').read())
+soup = BeautifulSoup(open(sys.argv[1], 'r').read())
 soup.prettify()
 
 classes = getClasses(soup)
