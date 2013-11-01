@@ -1,0 +1,13 @@
+HOW TO USE
+==========
+
+1. Get the HTML from your SIS weekly schedule using something like Firefox's
+	inspector.
+
+2. Convert to an iCal using $python extractor.py foo.html$
+
+NOTES
+=====
+
+* The generated iCal is printed on stdout.
+* Requires python 2.7
