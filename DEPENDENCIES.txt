@@ -1,1 +1,2 @@
 icalendar: https://github.com/collective/icalendar
+selenium: https://pypi.python.org/pypi/selenium
